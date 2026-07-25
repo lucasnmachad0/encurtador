@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Estatísticas - Encurtador de URL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Estatísticas</h1>
+
+        {% if urls %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>URL Original</th>
+                    <th>Cliques</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for codigo, dados in urls.items() %}
+                <tr>
+                    <td>{{ codigo }}</td>
+                    <td class="url-original">{{ dados.url }}</td>
+                    <td>{{ dados.cliques }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Nenhum link criado ainda.</p>
+        {% endif %}
+
+        <p><a href="/">Voltar para o encurtador</a></p>
+    </div>
+</body>
+</html>
