@@ -8,26 +8,24 @@ app = Flask(__name__)
 
 ARQUIVO_URLS = "urls.json"
 
-# Cria o arquivo de URLs se ele ainda não existir
 if not os.path.exists(ARQUIVO_URLS):
     with open(ARQUIVO_URLS, "w", encoding="utf-8") as f:
         json.dump({}, f)
 
 
 def carregar_urls():
-    """Lê o arquivo JSON e devolve um dicionário {codigo: url_original}."""
-    with open(ARQUIVO_URLS, "r", encoding="utf-8") as f:
+    # utf-8-sig ignora o caractere invisível (BOM) que o Windows
+    # às vezes adiciona no início do arquivo
+    with open(ARQUIVO_URLS, "r", encoding="utf-8-sig") as f:
         return json.load(f)
 
 
 def salvar_urls(dados):
-    """Salva o dicionário atualizado de volta no arquivo JSON."""
     with open(ARQUIVO_URLS, "w", encoding="utf-8") as f:
         json.dump(dados, f, indent=2, ensure_ascii=False)
 
 
 def gerar_codigo(tamanho=6):
-    """Gera um código aleatório de letras e números."""
     caracteres = string.ascii_letters + string.digits
     return "".join(random.choice(caracteres) for _ in range(tamanho))
 
@@ -40,12 +38,14 @@ def index():
         url_longa = request.form["url"]
         urls = carregar_urls()
 
-        # Gera um código e garante que não existe outro igual
         codigo = gerar_codigo()
         while codigo in urls:
             codigo = gerar_codigo()
 
-        urls[codigo] = url_longa
+        urls[codigo] = {
+            "url": url_longa,
+            "cliques": 0
+        }
         salvar_urls(urls)
 
         link_curto = request.host_url + codigo
@@ -56,12 +56,20 @@ def index():
 @app.route("/<codigo>")
 def redirecionar(codigo):
     urls = carregar_urls()
-    url_original = urls.get(codigo)
+    entrada = urls.get(codigo)
 
-    if url_original:
-        return redirect(url_original)
+    if entrada:
+        entrada["cliques"] += 1
+        salvar_urls(urls)
+        return redirect(entrada["url"])
 
     return render_template("erro.html"), 404
+
+
+@app.route("/estatisticas")
+def estatisticas():
+    urls = carregar_urls()
+    return render_template("estatisticas.html", urls=urls)
 
 
 if __name__ == "__main__":
