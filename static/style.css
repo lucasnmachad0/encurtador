@@ -46,6 +46,16 @@ button:hover {
 a {
     color: #4CAF50;
 }
+
+.rodape {
+    margin-top: 20px;
+    font-size: 13px;
+}
+
+.rodape a {
+    color: #888;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
