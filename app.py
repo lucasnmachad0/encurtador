@@ -14,8 +14,7 @@ if not os.path.exists(ARQUIVO_URLS):
 
 
 def carregar_urls():
-    # utf-8-sig ignora o caractere invisível (BOM) que o Windows
-    # às vezes adiciona no início do arquivo
+
     with open(ARQUIVO_URLS, "r", encoding="utf-8-sig") as f:
         return json.load(f)
 
