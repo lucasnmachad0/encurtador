@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Encurtador de URL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Encurtador de URL</h1>
+
+        <form method="POST" action="/">
+            <input type="text" name="url" placeholder="Cole sua URL longa aqui" required>
+            <button type="submit">Encurtar</button>
+        </form>
+
+        {% if link_curto %}
+        <div class="resultado">
+            <p>Seu link encurtado:</p>
+            <a href="{{ link_curto }}" target="_blank">{{ link_curto }}</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
